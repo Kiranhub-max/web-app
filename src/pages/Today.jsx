@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { todayISO, formatFriendly } from '../lib/dates';
+import TaskFormModal from '../components/TaskFormModal';
 
 export default function Today() {
   const [tasks, setTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingTask, setEditingTask] = useState(undefined); // undefined = closed
+
+  const [note, setNote] = useState({ learned: '', reflection: '' });
+  const [noteLoading, setNoteLoading] = useState(true);
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [noteSavedAt, setNoteSavedAt] = useState(null);
+
   const date = todayISO();
 
   async function loadTasks() {
@@ -12,7 +21,7 @@ export default function Today() {
 
     const { data: activeTasks, error: taskErr } = await supabase
       .from('tasks')
-      .select('id, name, resource_url, categories(name, icon)')
+      .select('*, categories(name, icon)')
       .eq('status', 'active')
       .order('created_at', { ascending: true });
 
@@ -37,8 +46,29 @@ export default function Today() {
     setLoading(false);
   }
 
+  async function loadCategories() {
+    const { data, error } = await supabase.from('categories').select('*').order('name');
+    if (error) console.error(error);
+    setCategories(data ?? []);
+  }
+
+  async function loadNote() {
+    setNoteLoading(true);
+    const { data, error } = await supabase
+      .from('daily_notes')
+      .select('learned, reflection')
+      .eq('date', date)
+      .maybeSingle();
+
+    if (error) console.error(error);
+    if (data) setNote({ learned: data.learned ?? '', reflection: data.reflection ?? '' });
+    setNoteLoading(false);
+  }
+
   useEffect(() => {
     loadTasks();
+    loadCategories();
+    loadNote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,6 +97,32 @@ export default function Today() {
     }
   }
 
+  async function saveNote() {
+    setNoteSaving(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { error } = await supabase.from('daily_notes').upsert(
+      {
+        user_id: user.id,
+        date,
+        learned: note.learned || null,
+        reflection: note.reflection || null,
+      },
+      { onConflict: 'user_id,date' }
+    );
+
+    setNoteSaving(false);
+
+    if (error) {
+      console.error(error);
+      alert('Could not save note: ' + error.message);
+      return;
+    }
+    setNoteSavedAt(new Date());
+  }
+
   const completedCount = tasks.filter((t) => t.completed).length;
   const total = tasks.length;
   const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
@@ -81,8 +137,8 @@ export default function Today() {
           <svg viewBox="0 0 132 132">
             <defs>
               <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#5b8cff" />
-                <stop offset="100%" stopColor="#8b6bff" />
+                <stop offset="0%" stopColor="#5dd62c" />
+                <stop offset="100%" stopColor="#337418" />
               </linearGradient>
             </defs>
             <circle className="ring-track" cx="66" cy="66" r="55" />
@@ -108,7 +164,7 @@ export default function Today() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="card" style={{ marginBottom: 24 }}>
         {loading ? (
           <p className="empty-state">Loading…</p>
         ) : tasks.length === 0 ? (
@@ -129,20 +185,69 @@ export default function Today() {
                   )}
                 </span>
               </button>
-              {task.resource_url && (
-                <a
-                  className="resource-link"
-                  href={task.resource_url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  🔗 Open
-                </a>
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {task.resource_url && (
+                  <a className="resource-link" href={task.resource_url} target="_blank" rel="noreferrer">
+                    🔗 Open
+                  </a>
+                )}
+                <button className="btn-text" onClick={() => setEditingTask(task)} aria-label="Edit task">
+                  ✏️
+                </button>
+              </div>
             </div>
           ))
         )}
       </div>
+
+      <div className="section-heading">Daily Reflection</div>
+      <div className="card">
+        {noteLoading ? (
+          <p className="empty-state">Loading…</p>
+        ) : (
+          <>
+            <div className="form-field">
+              <label>What did I learn today?</label>
+              <textarea
+                rows={2}
+                value={note.learned}
+                onChange={(e) => setNote({ ...note, learned: e.target.value })}
+              />
+            </div>
+            <div className="form-field">
+              <label>How was my day?</label>
+              <textarea
+                rows={2}
+                value={note.reflection}
+                onChange={(e) => setNote({ ...note, reflection: e.target.value })}
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button className="btn btn-primary" onClick={saveNote} disabled={noteSaving}>
+                {noteSaving ? 'Saving…' : 'Save Reflection'}
+              </button>
+              {noteSavedAt && (
+                <span style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>
+                  Saved {noteSavedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {editingTask !== undefined && (
+        <TaskFormModal
+          task={editingTask}
+          categories={categories}
+          onClose={() => setEditingTask(undefined)}
+          onSaved={() => {
+            setEditingTask(undefined);
+            loadTasks();
+            loadCategories();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,18 +1,18 @@
 /* ===================== Design tokens ===================== */
 :root {
-  --bg: #0b0e17;
-  --bg-elevated: #10141f;
-  --paper: #141926;
-  --paper-2: #1a2032;
-  --ink: #eef0f6;
-  --ink-soft: #8891a7;
-  --ink-faint: #5b6377;
-  --line: #232a3d;
+  --bg: #0f0f0f;
+  --bg-elevated: #141414;
+  --paper: #1a1a1a;
+  --paper-2: #202020;
+  --ink: #f8f8f8;
+  --ink-soft: #9a9a94;
+  --ink-faint: #5f5f5a;
+  --line: #2a2a2a;
 
-  --accent: #5b8cff;
-  --accent-2: #8b6bff;
-  --accent-tint: rgba(91, 140, 255, 0.12);
-  --gradient: linear-gradient(135deg, #5b8cff 0%, #8b6bff 100%);
+  --accent: #5dd62c;
+  --accent-2: #337418;
+  --accent-tint: rgba(93, 214, 44, 0.12);
+  --gradient: linear-gradient(135deg, #5dd62c 0%, #337418 100%);
 
   --amber: #ff9f43;
   --amber-tint: rgba(255, 159, 67, 0.14);
@@ -41,8 +41,8 @@ body,
 body {
   margin: 0;
   background: var(--bg);
-  background-image: radial-gradient(circle at 15% 0%, rgba(91, 140, 255, 0.09), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(139, 107, 255, 0.07), transparent 40%);
+  background-image: radial-gradient(circle at 15% 0%, rgba(93, 214, 44, 0.1), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(51, 116, 24, 0.1), transparent 40%);
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-body);
@@ -357,90 +357,21 @@ a {
 }
 
 .btn-text {
-  appearance: none;
-  border: 1px solid transparent;
-  background: transparent;
+  background: none;
   color: var(--ink-soft);
-  font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 10px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  font-weight: 500;
+  padding: 6px 8px;
 }
 
 .btn-text:hover {
-  border-color: rgba(91, 140, 255, 0.28);
-  background: var(--accent-tint);
   color: var(--accent);
 }
 
-.btn-text:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.btn-task-edit {
-  border-color: rgba(67, 181, 129, 0.42);
-  background: rgba(67, 181, 129, 0.14);
-  color: #5fe0a7;
-}
-
-.btn-task-edit:hover {
-  border-color: rgba(67, 181, 129, 0.62);
-  background: rgba(67, 181, 129, 0.22);
-  color: #7af0bb;
-}
-
-.btn-task-edit:focus-visible {
-  outline: 2px solid #43b581;
-  outline-offset: 2px;
-}
-
 .btn-danger-text {
-  appearance: none;
-  border: 1px solid rgba(255, 92, 114, 0.35);
-  background: var(--red-tint);
+  background: none;
   color: var(--red);
-  font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 10px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.btn-danger-text:hover {
-  background: rgba(255, 92, 114, 0.22);
-  border-color: rgba(255, 92, 114, 0.6);
-}
-
-.btn-danger-text:focus-visible {
-  outline: 2px solid rgba(255, 92, 114, 0.75);
-  outline-offset: 2px;
-}
-
-.btn-filter-toggle {
-  border-color: rgba(255, 159, 67, 0.4);
-  background: rgba(255, 159, 67, 0.12);
-  color: #ffb56e;
-}
-
-.btn-filter-toggle.is-active {
-  color: var(--amber);
-  border-color: rgba(255, 159, 67, 0.5);
-  background: var(--amber-tint);
-}
-
-.btn-filter-toggle:hover {
-  border-color: rgba(255, 159, 67, 0.42);
-  background: rgba(255, 159, 67, 0.12);
-  color: #ffb56e;
-}
-
-.btn-filter-toggle:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 2px;
+  font-weight: 500;
+  padding: 6px 8px;
 }
 
 .form-field {
