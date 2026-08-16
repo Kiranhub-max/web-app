@@ -357,21 +357,53 @@ a {
 }
 
 .btn-text {
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   color: var(--ink-soft);
-  font-weight: 500;
-  padding: 6px 8px;
+  font-weight: 600;
+  padding: 8px 14px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .btn-text:hover {
   color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-tint);
 }
 
 .btn-danger-text {
-  background: none;
+  background: var(--red-tint);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   color: var(--red);
-  font-weight: 500;
-  padding: 6px 8px;
+  font-weight: 600;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-danger-text:hover {
+  opacity: 0.8;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  font-size: 15px;
+  flex-shrink: 0;
 }
 
 .form-field {

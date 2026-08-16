@@ -191,7 +191,7 @@ export default function Today() {
                     🔗 Open
                   </a>
                 )}
-                <button className="btn-text" onClick={() => setEditingTask(task)} aria-label="Edit task">
+                <button className="btn-text icon-btn" onClick={() => setEditingTask(task)} aria-label="Edit task">
                   ✏️
                 </button>
               </div>

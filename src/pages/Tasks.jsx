@@ -56,7 +56,17 @@ export default function Tasks() {
       </div>
       <p className="page-subtitle">Define once — it shows up every day it's due.</p>
 
-      <button className="btn-text" style={{ marginBottom: 12, paddingLeft: 0 }} onClick={() => setShowArchived((s) => !s)}>
+      <button
+        className="btn-text"
+        style={{
+          marginBottom: 12,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '10px 18px',
+        }}
+        onClick={() => setShowArchived((s) => !s)}
+      >
         {showArchived ? 'Hide archived' : 'Show archived'}
       </button>
 
